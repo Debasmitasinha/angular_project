@@ -8,7 +8,57 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"></script>
     <style>
-        /* Styling remains the same */
+        /* Loading overlay styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            backdrop-filter: blur(10px);
+            transition: opacity 1s ease-out;
+            opacity: 1;
+        }
+
+        .loading-overlay.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-sphere {
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle at center,
+                rgba(255, 255, 255, 1) 0%,
+                rgba(255, 255, 255, 0.8) 20%,
+                rgba(255, 255, 255, 0.4) 40%,
+                transparent 70%);
+            border-radius: 50%;
+            animation: loadingSphere 2s ease-in-out forwards;
+            filter: blur(20px);
+            box-shadow: 0 0 100px 50px rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes loadingSphere {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(140vw, 140vh) scale(2);
+                opacity: 0;
+            }
+        }
+
+        /* Existing styles */
         * {
             margin: 0;
             padding: 0;
@@ -24,6 +74,7 @@
             position: relative;
             overflow-x: hidden;
             cursor: none; /* Hide default cursor */
+            overflow-y: auto; /* Enable vertical scrolling */
         }
 
         /* Interactive Spheres with Ray Tracing Effect */
@@ -557,6 +608,11 @@
     </style>
 </head>
 <body ng-controller="MainController">
+    <!-- Loading overlay -->
+    <div class="loading-overlay">
+        <div class="loading-sphere"></div>
+    </div>
+
     <!-- Interactive Spheres -->
     <div class="sphere"></div>
     <div class="sphere"></div>
@@ -565,24 +621,44 @@
     
     <div class="cursor"></div>
     <nav class="nav">
-        <a href="#/home" class="brand">{{title}}</a>
+        <a href="index.html" class="brand">The Dancing Diva</a>
         <div class="nav-links">
-            <a href="#/home" ng-class="{active: isActive('/home')}">Home</a>
-            <a href="#/about" ng-class="{active: isActive('/about')}">About</a>
-            <a href="#/achievement" ng-class="{active: isActive('/achievement')}">Achievement</a>
-            <a href="#/gallery" ng-class="{active: isActive('/gallery')}">Gallery</a>
-            <a href="#/contact" ng-class="{active: isActive('/contact')}">Contact</a>
-            <a href="#/download" ng-class="{active: isActive('/download')}">Download CV</a>
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="achievement.html">Achievement</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="contact.html">Contact</a>
+            <a href="download.html">Download CV</a>
         </div>
     </nav>
 
-    <div class="container" ng-view></div>
+    <div class="container">
+        <div class="home-content">
+            <div class="intro-text">
+                <h2>Hello I'm</h2>
+                <h1>Debasmita Sinha</h1>
+                <p class="subtitle">Classical Dance Practitioner & Model from India</p>
+                <a href="https://wa.me/918837483396" target="_blank" class="cta-button">Chat on Whatsapp</a>
+            </div>
+            <div class="image-container">
+                <img src="images/pose.jpg" alt="Profile" class="profile-image floating" width="500" height="600">
+                <div class="image-reflection"></div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        var app = angular.module('myApp', ['ngRoute']);
-
-        // Custom cursor configuration
+        // Loading animation
         document.addEventListener('DOMContentLoaded', function() {
+            const loadingOverlay = document.querySelector('.loading-overlay');
+            setTimeout(() => {
+                loadingOverlay.classList.add('fade-out');
+                setTimeout(() => {
+                    loadingOverlay.remove();
+                }, 1000);
+            }, 2000);
+
+            // Custom cursor configuration
             const cursor = document.querySelector('.cursor');
             const numTrails = 10;
             const trails = [];
@@ -677,129 +753,6 @@
                 moveSphere();
             });
         });
-
-        app.config(function($routeProvider) {
-            $routeProvider
-                .when('/home', {
-                    template: `
-                        <div class="home-content">
-                            <div class="intro-text">
-                                <h2>{{greeting}}</h2>
-                                <h1>
-                                    <span ng-repeat="letter in name track by $index" class="animated-text">{{letter}}</span>
-                                </h1>
-                                <p class="subtitle">{{profession}}</p>
-                                <a href="https://wa.me/918837483396" target="_blank" class="cta-button">{{ctaText}}</a>
-                            </div>
-                            <div class="image-container">
-                                <img src="images/pose.jpg" alt="Profile" class="profile-image floating" width="500" height="500">
-                                <div class="image-reflection"></div>
-                            </div>
-                        </div>
-                    `,
-                    controller: 'HomeController'
-                })
-                .when('/about', {
-                    template: `
-                        <div class="animate__animated animate__fadeIn">
-                            <h1>About Me</h1>
-                            <p>Hi, I'm Debasmita Sinha, a passionate classical dancer and model from India. My journey in the world of dance began at an early age, and I have dedicated my life to mastering the art of classical dance forms like Bharatanatyam and Odissi.</p>
-                            <p>Alongside my dance career, I have also ventured into modeling, collaborating with various fashion brands and cultural events. I believe in the power of art to express emotions, connect people, and inspire change.</p>
-                        </div>
-                    `,
-                    controller: 'AboutController'
-                })
-                .when('/achievement', {
-                    template: `
-                        <div class="animate__animated animate__fadeIn">
-                            <h1>Achievements</h1>
-                            <ul>
-                                <li>Winner of the National Classical Dance Competition (2022)</li>
-                                <li>Featured in leading fashion magazines such as Vogue India</li>
-                                <li>Performed at international cultural festivals in Paris, Tokyo, and London</li>
-                                <li>Collaborated with renowned choreographers and fashion designers</li>
-                            </ul>
-                        </div>
-                    `,
-                    controller: 'AchievementController'
-                })
-                .when('/gallery', {
-                    template: `
-                        <div class="animate__animated animate__fadeIn">
-                            <h1>Gallery</h1>
-                            <p>Here are some of my favorite moments captured during performances and photoshoots.</p>
-                            <img src="images/performance1.jpg" alt="Performance 1" class="profile-image">
-                            <img src="images/performance2.jpg" alt="Performance 2" class="profile-image">
-                        </div>
-                    `,
-                    controller: 'GalleryController'
-                })
-                .when('/contact', {
-                    template: `
-                        <div class="animate__animated animate__fadeIn">
-                            <h1>Contact</h1>
-                            <p>If you'd like to get in touch for collaborations or performances, feel free to reach out!</p>
-                            <ul>
-                                <li><a href="mailto:debasmita@example.com">Email: debasmita@example.com</a></li>
-                                <li><a href="tel:+918837483396">Phone: +91-8837483396</a></li>
-                                <li><a href="https://instagram.com/debasmita_dance" target="_blank">Instagram: @debasmita_dance</a></li>
-                            </ul>
-                        </div>
-                    `,
-                    controller: 'ContactController'
-                })
-                .when('/download', {
-                    template: `
-                        <div class="animate__animated animate__fadeIn">
-                            <h1>Download CV</h1>
-                            <p>Click the link below to download my professional CV.</p>
-                            <a href="downloads/DebasmitaSinhaCV.pdf" download class="cta-button">Download CV</a>
-                        </div>
-                    `,
-                    controller: 'DownloadController'
-                })
-                .otherwise({
-                    redirectTo: '/home'
-                });
-        });
-
-        app.controller('MainController', function($scope, $location) {
-            $scope.title = "The Dancing Diva";
-            $scope.isActive = function(path) {
-                return $location.path() === path;
-            };
-        });
-
-        app.controller('HomeController', function($scope) {
-            $scope.greeting = "Hello I'm";
-            $scope.name = "Debasmita    Sinha".split('');  // Added more spaces between first and last name
-            $scope.profession = "Classical Dance Practitioner & Model from India";
-            $scope.ctaText = "Chat on Whatsapp";
-            $scope.trustAsHtml = function(html) {
-                return $sce.trustAsHtml(html);
-            };
-        });
-
-        app.controller('AboutController', function($scope) {
-            // About page content
-        });
-
-        app.controller('AchievementController', function($scope) {
-            // Achievement page content
-        });
-
-        app.controller('GalleryController', function($scope) {
-            // Gallery page content
-        });
-
-        app.controller('ContactController', function($scope) {
-            // Contact page content
-        });
-
-        app.controller('DownloadController', function($scope) {
-            // Download CV page content
-        });
     </script>
 </body>
-</html>
 </html>
