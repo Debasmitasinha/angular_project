@@ -15,3 +15,7 @@ After Cloning(type this one in powershell):
 
 After this open the browser and type: 
 <pre>localhost:8000</pre>
+
+### Thanks
+
+If you like this portfolio template don't forget give it a ⭐ 
