@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Dancing Diva - Debasmita Sinha</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"></script>
+    <style>
+        /* Styling remains the same */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #4e9fff 0%, #9d4eff 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: white;
+            position: relative;
+            overflow-x: hidden;
+            cursor: none; /* Hide default cursor */
+        }
+
+        /* Interactive Spheres with Ray Tracing Effect */
+        .sphere {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, 
+                rgba(255, 255, 255, 0.6) 0%,
+                rgba(157, 78, 255, 0.4) 30%,
+                rgba(78, 159, 255, 0.3) 60%,
+                rgba(255, 255, 255, 0.1) 100%);
+            pointer-events: none;
+            z-index: 0;
+            animation: bounceAndFloat 8s infinite ease-in-out;
+            box-shadow: 
+                inset -2px -2px 8px rgba(255,255,255,0.1),
+                inset 2px 2px 8px rgba(255,255,255,0.2),
+                5px 5px 10px rgba(255,255,255,0.1);
+            backdrop-filter: blur(2px);
+        }
+
+        .sphere:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+            transform-style: preserve-3d;
+        }
+
+        .sphere:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            left: 80%;
+            animation-delay: 1s;
+            transform-style: preserve-3d;
+        }
+
+        .sphere:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            top: 40%;
+            left: 30%;
+            animation-delay: 2s;
+            transform-style: preserve-3d;
+        }
+
+        .sphere:nth-child(4) {
+            width: 120px;
+            height: 120px;
+            top: 80%;
+            left: 20%;
+            animation-delay: 3s;
+            transform-style: preserve-3d;
+        }
+
+        @keyframes bounceAndFloat {
+            0%, 100% {
+                transform: translateY(0) translateX(0) translateZ(0);
+                animation-timing-function: ease-out;
+            }
+            25% {
+                transform: translateY(-200px) translateX(50px) translateZ(50px);
+            }
+            50% {
+                transform: translateY(0) translateX(100px) translateZ(0);
+                animation-timing-function: ease-in;
+            }
+            75% {
+                transform: translateY(-100px) translateX(50px) translateZ(25px);
+            }
+            85% {
+                transform: translateY(-20px) translateX(20px) translateZ(10px);
+            }
+            95% {
+                transform: translateY(-5px) translateX(5px) translateZ(5px);
+            }
+        }
+
+        /* Rest of the styles remain unchanged */
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Custom cursor */
+        .cursor {
+            width: 19px; /* Reduced by 1% from 20px */
+            height: 19px; /* Reduced by 1% from 20px */
+            border: 2px solid white;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.1s ease;
+        }
+
+        .cursor-trail {
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.15s ease;
+        }
+
+        .nav, .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav {
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeInDown 1s;
+            backdrop-filter: blur(5px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .brand:hover {
+            transform: scale(1.1);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .nav-links a:before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        .nav-links a:hover:before {
+            width: 200px;
+            height: 200px;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: calc(100vh - 80px);
+            animation: fadeIn 1s;
+        }
+        .home-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: center;
+            height: calc(100vh - 120px);
+        }
+        .intro-text {
+            animation: slideInLeft 1s;
+        }
+        .intro-text h2 {
+            font-size: 2rem;
+            font-weight: normal;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .intro-text h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .animated-text {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        .animated-text:hover {
+            transform: scale(1.2) rotate(5deg);
+            text-shadow: 0 0 15px rgba(255,255,255,0.8);
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: #000;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-button:after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(45deg);
+            transition: 0.5s;
+        }
+        .cta-button:hover:after {
+            left: 100%;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            background-color: #333;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .image-container {
+            position: relative;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+        }
+
+        .profile-image {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 
+                        0 15px 35px rgba(157, 78, 255, 0.2),
+                        0 20px 40px rgba(78, 159, 255, 0.15);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: float 6s ease-in-out infinite;
+            position: relative;
+            transform-origin: center center;
+            backface-visibility: hidden;
+            will-change: transform;
+            opacity: 1;
+            z-index: 1;
+        }
+
+        /* Enhanced reflection styles */
+        .image-reflection {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            bottom: -80%;
+            left: 0;
+            transform: scaleY(-1);
+            opacity: 0.4;
+            background: linear-gradient(to bottom, 
+                rgba(255,255,255,0.8) 0%,
+                rgba(255,255,255,0.3) 30%,
+                rgba(255,255,255,0.1) 60%,
+                transparent 100%
+            );
+            -webkit-mask-image: linear-gradient(to bottom,
+                rgba(0,0,0,1) 0%,
+                rgba(0,0,0,0.7) 30%,
+                rgba(0,0,0,0.3) 60%,
+                rgba(0,0,0,0) 100%
+            );
+            mask-image: linear-gradient(to bottom,
+                rgba(0,0,0,1) 0%,
+                rgba(0,0,0,0.7) 30%,
+                rgba(0,0,0,0.3) 60%,
+                rgba(0,0,0,0) 100%
+            );
+            animation: reflectionFloat 6s ease-in-out infinite;
+            pointer-events: none;
+            filter: blur(2px);
+            border-radius: 20px;
+        }
+
+        @keyframes reflectionFloat {
+            0% { transform: scaleY(-1) translateY(0px); opacity: 0.4; }
+            50% { transform: scaleY(-1) translateY(20px); opacity: 0.3; }
+            100% { transform: scaleY(-1) translateY(0px); opacity: 0.4; }
+        }
+
+        .profile-image:hover {
+            transform: scale(1.05) translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2),
+                        0 25px 45px rgba(157, 78, 255, 0.25),
+                        0 30px 50px rgba(78, 159, 255, 0.2);
+        }
+        
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            60% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Stop floating animation on hover */
+        .floating:hover {
+            animation-play-state: paused;
+        }
+
+        /* Media Queries for Responsive Design */
+        @media (max-width: 1200px) {
+            .container {
+                max-width: 95%;
+                padding: 1rem;
+            }
+            .intro-text h1 {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .home-content {
+                gap: 1.5rem;
+            }
+            .intro-text h1 {
+                font-size: 2.5rem;
+            }
+            .profile-image {
+                max-width: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .home-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                height: auto;
+                padding-top: 2rem;
+            }
+            .nav {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+            .intro-text h1 {
+                font-size: 2.2rem;
+            }
+            .intro-text h2 {
+                font-size: 1.8rem;
+            }
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            .profile-image {
+                max-width: 80%;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .nav-links a {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            .intro-text h1 {
+                font-size: 2rem;
+            }
+            .intro-text h2 {
+                font-size: 1.5rem;
+            }
+            .subtitle {
+                font-size: 1rem;
+            }
+            .cta-button {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+            .profile-image {
+                max-width: 90%;
+            }
+        }
+
+        /* For very small devices */
+        @media (max-width: 320px) {
+            .nav-links {
+                gap: 0.5rem;
+            }
+            .nav-links a {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.8rem;
+            }
+            .intro-text h1 {
+                font-size: 1.8rem;
+            }
+            .intro-text h2 {
+                font-size: 1.3rem;
+            }
+        }
+
+        /* For high-resolution displays */
+        @media (min-width: 1400px) {
+            .container {
+                max-width: 1400px;
+            }
+            .intro-text h1 {
+                font-size: 4rem;
+            }
+            .intro-text h2 {
+                font-size: 2.5rem;
+            }
+            .subtitle {
+                font-size: 1.4rem;
+            }
+        }
+
+        /* For landscape orientation on mobile devices */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .home-content {
+                height: auto;
+                min-height: calc(100vh - 80px);
+            }
+            .nav {
+                padding: 0.5rem 1rem;
+            }
+            .intro-text h1 {
+                font-size: 2rem;
+            }
+            .profile-image {
+                max-height: 60vh;
+                width: auto;
+            }
+        }
+
+        /* For print media */
+        @media print {
+            .cursor, .cursor-trail, .sphere, .ground {
+                display: none;
+            }
+            body {
+                background: white;
+                color: black;
+            }
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body ng-controller="MainController">
+    <!-- Interactive Spheres -->
+    <div class="sphere"></div>
+    <div class="sphere"></div>
+    <div class="sphere"></div>
+    <div class="sphere"></div>
+    
+    <div class="cursor"></div>
+    <nav class="nav">
+        <a href="#/home" class="brand">{{title}}</a>
+        <div class="nav-links">
+            <a href="#/home" ng-class="{active: isActive('/home')}">Home</a>
+            <a href="#/about" ng-class="{active: isActive('/about')}">About</a>
+            <a href="#/achievement" ng-class="{active: isActive('/achievement')}">Achievement</a>
+            <a href="#/gallery" ng-class="{active: isActive('/gallery')}">Gallery</a>
+            <a href="#/contact" ng-class="{active: isActive('/contact')}">Contact</a>
+            <a href="#/download" ng-class="{active: isActive('/download')}">Download CV</a>
+        </div>
+    </nav>
+
+    <div class="container" ng-view></div>
+
+    <script>
+        var app = angular.module('myApp', ['ngRoute']);
+
+        // Custom cursor configuration
+        document.addEventListener('DOMContentLoaded', function() {
+            const cursor = document.querySelector('.cursor');
+            const numTrails = 10;
+            const trails = [];
+            
+            // Create cursor trails
+            for(let i = 0; i < numTrails; i++) {
+                const trail = document.createElement('div');
+                trail.className = 'cursor-trail';
+                document.body.appendChild(trail);
+                trails.push({
+                    element: trail,
+                    x: 0,
+                    y: 0
+                });
+            }
+
+            // Track mouse movement
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+                
+                trails.forEach((trail, index) => {
+                    trail.x = e.clientX;
+                    trail.y = e.clientY;
+                    trail.element.style.left = trail.x + 'px';
+                    trail.element.style.top = trail.y + 'px';
+                    trail.element.style.opacity = 1 - (index * 0.1);
+                    trail.element.style.transform = `scale(${1 - index * 0.1})`;
+                });
+            });
+
+            // Cursor hover effect on any element
+            document.body.addEventListener('mouseover', (e) => {
+                if (e.target !== cursor) {
+                    cursor.style.transform = 'scale(1.5)';
+                    cursor.style.width = '25px';
+                    cursor.style.height = '25px';
+                    cursor.style.borderRadius = '25px';
+                }
+            });
+            
+            document.body.addEventListener('mouseout', () => {
+                cursor.style.transform = 'scale(1)';
+                cursor.style.width = '19px';
+                cursor.style.height = '19px';
+                cursor.style.borderRadius = '50%';
+            });
+
+            // Additional scale effect for links and images
+            document.querySelectorAll('a, img').forEach(element => {
+                element.addEventListener('mouseenter', () => {
+                    cursor.style.transform = 'scale(1.8)';
+                    if(element.tagName === 'IMG') {
+                        element.style.transform = 'scale(1.05) translateY(-10px)';
+                        element.style.animationPlayState = 'paused';
+                    }
+                });
+                
+                element.addEventListener('mouseleave', () => {
+                    cursor.style.transform = 'scale(1.5)';
+                    if(element.tagName === 'IMG') {
+                        element.style.transform = 'scale(1)';
+                        element.style.animationPlayState = 'running';
+                    }
+                });
+            });
+
+            // Add random movement to spheres
+            const spheres = document.querySelectorAll('.sphere');
+            spheres.forEach(sphere => {
+                let x = Math.random() * window.innerWidth;
+                let y = Math.random() * window.innerHeight;
+                let speedX = (Math.random() - 0.5) * 4;
+                let speedY = (Math.random() - 0.5) * 4;
+
+                function moveSphere() {
+                    x += speedX;
+                    y += speedY;
+
+                    // Bounce off walls
+                    if (x <= 0 || x >= window.innerWidth - sphere.offsetWidth) {
+                        speedX *= -1;
+                    }
+                    if (y <= 0 || y >= window.innerHeight - sphere.offsetHeight) {
+                        speedY *= -1;
+                    }
+
+                    sphere.style.transform = `translate(${x}px, ${y}px)`;
+                    requestAnimationFrame(moveSphere);
+                }
+
+                moveSphere();
+            });
+        });
+
+        app.config(function($routeProvider) {
+            $routeProvider
+                .when('/home', {
+                    template: `
+                        <div class="home-content">
+                            <div class="intro-text">
+                                <h2>{{greeting}}</h2>
+                                <h1>
+                                    <span ng-repeat="letter in name track by $index" class="animated-text">{{letter}}</span>
+                                </h1>
+                                <p class="subtitle">{{profession}}</p>
+                                <a href="https://wa.me/918837483396" target="_blank" class="cta-button">{{ctaText}}</a>
+                            </div>
+                            <div class="image-container">
+                                <img src="images/pose.jpg" alt="Profile" class="profile-image floating" width="500" height="500">
+                                <div class="image-reflection"></div>
+                            </div>
+                        </div>
+                    `,
+                    controller: 'HomeController'
+                })
+                .when('/about', {
+                    template: `
+                        <div class="animate__animated animate__fadeIn">
+                            <h1>About Me</h1>
+                            <p>Hi, I'm Debasmita Sinha, a passionate classical dancer and model from India. My journey in the world of dance began at an early age, and I have dedicated my life to mastering the art of classical dance forms like Bharatanatyam and Odissi.</p>
+                            <p>Alongside my dance career, I have also ventured into modeling, collaborating with various fashion brands and cultural events. I believe in the power of art to express emotions, connect people, and inspire change.</p>
+                        </div>
+                    `,
+                    controller: 'AboutController'
+                })
+                .when('/achievement', {
+                    template: `
+                        <div class="animate__animated animate__fadeIn">
+                            <h1>Achievements</h1>
+                            <ul>
+                                <li>Winner of the National Classical Dance Competition (2022)</li>
+                                <li>Featured in leading fashion magazines such as Vogue India</li>
+                                <li>Performed at international cultural festivals in Paris, Tokyo, and London</li>
+                                <li>Collaborated with renowned choreographers and fashion designers</li>
+                            </ul>
+                        </div>
+                    `,
+                    controller: 'AchievementController'
+                })
+                .when('/gallery', {
+                    template: `
+                        <div class="animate__animated animate__fadeIn">
+                            <h1>Gallery</h1>
+                            <p>Here are some of my favorite moments captured during performances and photoshoots.</p>
+                            <img src="images/performance1.jpg" alt="Performance 1" class="profile-image">
+                            <img src="images/performance2.jpg" alt="Performance 2" class="profile-image">
+                        </div>
+                    `,
+                    controller: 'GalleryController'
+                })
+                .when('/contact', {
+                    template: `
+                        <div class="animate__animated animate__fadeIn">
+                            <h1>Contact</h1>
+                            <p>If you'd like to get in touch for collaborations or performances, feel free to reach out!</p>
+                            <ul>
+                                <li><a href="mailto:debasmita@example.com">Email: debasmita@example.com</a></li>
+                                <li><a href="tel:+918837483396">Phone: +91-8837483396</a></li>
+                                <li><a href="https://instagram.com/debasmita_dance" target="_blank">Instagram: @debasmita_dance</a></li>
+                            </ul>
+                        </div>
+                    `,
+                    controller: 'ContactController'
+                })
+                .when('/download', {
+                    template: `
+                        <div class="animate__animated animate__fadeIn">
+                            <h1>Download CV</h1>
+                            <p>Click the link below to download my professional CV.</p>
+                            <a href="downloads/DebasmitaSinhaCV.pdf" download class="cta-button">Download CV</a>
+                        </div>
+                    `,
+                    controller: 'DownloadController'
+                })
+                .otherwise({
+                    redirectTo: '/home'
+                });
+        });
+
+        app.controller('MainController', function($scope, $location) {
+            $scope.title = "The Dancing Diva";
+            $scope.isActive = function(path) {
+                return $location.path() === path;
+            };
+        });
+
+        app.controller('HomeController', function($scope) {
+            $scope.greeting = "Hello I'm";
+            $scope.name = "Debasmita    Sinha".split('');  // Added more spaces between first and last name
+            $scope.profession = "Classical Dance Practitioner & Model from India";
+            $scope.ctaText = "Chat on Whatsapp";
+            $scope.trustAsHtml = function(html) {
+                return $sce.trustAsHtml(html);
+            };
+        });
+
+        app.controller('AboutController', function($scope) {
+            // About page content
+        });
+
+        app.controller('AchievementController', function($scope) {
+            // Achievement page content
+        });
+
+        app.controller('GalleryController', function($scope) {
+            // Gallery page content
+        });
+
+        app.controller('ContactController', function($scope) {
+            // Contact page content
+        });
+
+        app.controller('DownloadController', function($scope) {
+            // Download CV page content
+        });
+    </script>
+</body>
+</html>
+</html>
