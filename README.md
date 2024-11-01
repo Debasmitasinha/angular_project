@@ -10,5 +10,5 @@ framework.
 Clone the repo using the following command: 
 <pre>git clone https://github.com/Debasmitasinha/angular_project</pre>
 
-After Cloning:
+After Cloning(type this one in powershell):
 <pre>python3 -m http.server</pre>
