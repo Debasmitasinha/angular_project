@@ -12,3 +12,6 @@ Clone the repo using the following command:
 
 After Cloning(type this one in powershell):
 <pre>python3 -m http.server</pre>
+
+After this open the browser and type: 
+<pre>localhost:8000</pre>
