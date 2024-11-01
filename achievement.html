@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="achievementApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Achievements & Awards</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            cursor: none; /* Hide default cursor */
+            animation: pageLoad 1s ease-out;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            position: relative;
+        }
+
+        /* Animated gradient overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(-45deg, #6b46c1, #3182ce, #805ad5, #4299e1);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Sun sphere effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50vh;
+            left: -50vh;
+            width: 100vh;
+            height: 100vh;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            pointer-events: none;
+            animation: sunEffect 2s ease-out forwards;
+            z-index: 1;
+        }
+
+        @keyframes sunEffect {
+            0% {
+                transform: translate(-100%, -100%) scale(0.5);
+                opacity: 0;
+                filter: blur(50px);
+            }
+            50% {
+                opacity: 1;
+                filter: blur(25px);
+            }
+            100% {
+                transform: translate(150%, 150%) scale(2);
+                opacity: 0;
+                filter: blur(0px);
+            }
+        }
+
+        @keyframes pageLoad {
+            0% {
+                opacity: 0;
+                transform: scale(0.98);
+                filter: blur(10px);
+            }
+            50% {
+                filter: blur(5px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+                filter: blur(0);
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            padding: 3rem 0;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .header h1 {
+            color: #ffffff;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            color: #ffffff;
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .achievement-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .achievement-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .achievement-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .achievement-card h3 {
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .achievement-card p {
+            color: #6c757d;
+        }
+
+        .navbar {
+            background: #2c3e50;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background-color: #34495e;
+        }
+
+        /* Custom cursor styles */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #2c3e50;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.1s ease;
+            transform-origin: center;
+        }
+
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: #2c3e50;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.15s ease-out;
+        }
+
+        /* Cursor hover effects */
+        a:hover ~ .cursor,
+        .achievement-card:hover ~ .cursor {
+            transform: scale(1.5);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body ng-controller="AchievementController">
+    <div class="cursor"></div>
+    <div class="cursor-dot"></div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="achievement.html">Achievements</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="download.html">Download</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="header">
+            <h1>{{pageTitle}}</h1>
+            <p>{{pageSubtitle}}</p>
+        </header>
+
+        <div class="achievements-grid">
+            <div class="achievement-card" ng-repeat="achievement in achievements">
+                <img ng-src="{{achievement.image}}" alt="{{achievement.alt}}">
+                <h3>{{achievement.title}}</h3>
+                <p>{{achievement.description}}</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var app = angular.module('achievementApp', []);
+        
+        app.controller('AchievementController', function($scope) {
+            $scope.pageTitle = 'My Achievements & Awards';
+            $scope.pageSubtitle = 'Celebrating Excellence in Dance and Modeling';
+            
+            $scope.achievements = [
+                {
+                    image: 'images/national-award.jpg',
+                    alt: 'National Dance Championship',
+                    title: 'MISS TEEN TALENTED INDIA UNIVERSE 21',
+                    description: 'First Place in Contemporary Dance Category (2023)'
+                },
+                {
+                    image: 'images/international-performance.jpg',
+                    alt: 'International Performance',
+                    title: 'P&B National Level Dance Champ 22',
+                    description: 'Featured Performer at Paris Dance Festival (2022)'
+                },
+                {
+                    image: 'images/teaching-excellence.jpg',
+                    alt: 'Teaching Excellence',
+                    title: 'Miss North-East Beauty Queen 2020',
+                    description: 'Best Dance Instructor of the Year (2023)'
+                },
+                {
+                    image: 'images/choreography-award.jpg',
+                    alt: 'Choreography Award',
+                    title: 'Winner Of Bishnupriya Manipuri Talent Hunt 2019',
+                    description: 'Regional Dance Competition (2022)'
+                },
+                {
+                    image: 'images/youth-mentor.jpg',
+                    alt: 'Youth Mentor Award',
+                    title: 'District Level Dance Champion – 2012',
+                    description: 'Excellence in Youth Dance Education (2023)'
+                },
+                {
+                    image: 'images/cultural-ambassador.jpg',
+                    alt: 'Cultural Ambassador',
+                    title: 'Cultural Ambassador',
+                    description: 'Representing Traditional Dance Forms Globally (2021-2023)'
+                }
+            ];
+        });
+
+        // Custom cursor animation
+        document.addEventListener('mousemove', function(e) {
+            const cursor = document.querySelector('.cursor');
+            const cursorDot = document.querySelector('.cursor-dot');
+            
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            // Add delay to cursor dot
+            setTimeout(() => {
+                cursorDot.style.left = e.clientX + 'px';
+                cursorDot.style.top = e.clientY + 'px';
+            }, 50);
+        });
+    </script>
+</body>
+</html>

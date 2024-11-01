@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            cursor: none; /* Hide default cursor */
+            animation: pageLoad 1s ease-out;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            position: relative;
+            color: var(--text-color);
+        }
+
+        :root {
+            --text-color: #2c3e50;
+            --text-color-light: #6c757d;
+            --text-color-inverse: #ffffff;
+        }
+
+        /* Animated gradient overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(-45deg, #6b46c1, #3182ce, #805ad5, #4299e1);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+                --text-color: #2c3e50;
+            }
+            50% {
+                background-position: 100% 50%;
+                --text-color: #ffffff;
+            }
+            100% {
+                background-position: 0% 50%;
+                --text-color: #2c3e50;
+            }
+        }
+
+        /* Sun sphere effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50vh;
+            left: -50vh;
+            width: 100vh;
+            height: 100vh;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            pointer-events: none;
+            animation: sunEffect 2s ease-out forwards;
+            z-index: 1;
+        }
+
+        @keyframes sunEffect {
+            0% {
+                transform: translate(-100%, -100%) scale(0.5);
+                opacity: 0;
+                filter: blur(50px);
+            }
+            50% {
+                opacity: 1;
+                filter: blur(25px);
+            }
+            100% {
+                transform: translate(150%, 150%) scale(2);
+                opacity: 0;
+                filter: blur(0px);
+            }
+        }
+
+        @keyframes pageLoad {
+            0% {
+                opacity: 0;
+                transform: scale(0.98);
+                filter: blur(10px);
+            }
+            50% {
+                filter: blur(5px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+                filter: blur(0);
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            padding: 3rem 0;
+            animation: fadeIn 1s ease-in;
+            color: #ffffff;
+        }
+
+        .header h1 {
+            color: #ffffff;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-section {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transform: translateY(0);
+            transition: transform 0.3s ease, color 0.3s ease;
+            color: var(--text-color);
+        }
+
+        .content-section:hover {
+            transform: translateY(-5px);
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .team-member {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(248, 249, 250, 0.9);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            color: var(--text-color);
+        }
+
+        .team-member:hover {
+            background: rgba(233, 236, 239, 0.9);
+            transform: scale(1.05);
+        }
+
+        .team-member img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            object-fit: cover;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 3rem 0;
+            text-align: center;
+        }
+
+        .stat-item {
+            font-size: 2rem;
+            color: var(--text-color);
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-color-light);
+        }
+
+        .navbar {
+            background: rgba(44, 62, 80, 0.9);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: var(--text-color-inverse);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(52, 73, 94, 0.9);
+        }
+
+        /* Custom cursor styles */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-color);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.1s ease;
+            transform-origin: center;
+        }
+
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--text-color);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.15s ease-out;
+        }
+
+        /* Cursor hover effect */
+        a:hover ~ .cursor {
+            transform: scale(1.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor"></div>
+    <div class="cursor-dot"></div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="achievement.html">Achievements</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="download.html">Download</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <header class="header">
+            <h1>About Me</h1>
+            <p>The Dancing Diva</p>
+        </header>
+
+        <section class="content-section">
+            <h2>My Story</h2>
+            <p>I am a passionate dancer who loves to dance and share my love for dance with others. I have been dancing since I was a child and I have never stopped since then. I have won many awards and I am proud to say that I am a world class dancer.</p>
+        </section>
+
+        <div class="stats">
+            <div class="stat-item" *ngFor="let stat of statistics">
+                <div class="counter" [countUp]="stat.value" [duration]="2000">0</div>
+                <div class="stat-label">{{stat.label}}</div>
+            </div>
+        </div>
+
+        <section class="content-section">
+            <h2>Our Team</h2>
+            <div class="team-grid">
+                <div class="team-member" *ngFor="let member of teamMembers">
+                    <img [src]="member.image" [alt]="member.name">
+                    <h3>{{member.name}}</h3>
+                    <p>{{member.position}}</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cursor = document.querySelector('.cursor');
+            const cursorDot = document.querySelector('.cursor-dot');
+            let cursorPos = { x: 0, y: 0 };
+            let dotPos = { x: 0, y: 0 };
+
+            document.addEventListener('mousemove', (e) => {
+                // Update target position
+                cursorPos.x = e.clientX;
+                cursorPos.y = e.clientY;
+                
+                // Immediately update outer cursor
+                cursor.style.left = cursorPos.x + 'px';
+                cursor.style.top = cursorPos.y + 'px';
+                
+                // Animate dot position
+                requestAnimationFrame(updateDot);
+            });
+
+            function updateDot() {
+                // Calculate new dot position with smooth following
+                const dx = cursorPos.x - dotPos.x;
+                const dy = cursorPos.y - dotPos.y;
+                
+                dotPos.x += dx * 0.2;
+                dotPos.y += dy * 0.2;
+                
+                cursorDot.style.left = dotPos.x + 'px';
+                cursorDot.style.top = dotPos.y + 'px';
+                
+                if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1) {
+                    requestAnimationFrame(updateDot);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
