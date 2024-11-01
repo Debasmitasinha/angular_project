@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Download Resume</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -148,12 +149,43 @@
             padding: 1rem;
             border-radius: 5px;
             text-align: center;
-            transition: transform 0.3s ease;
-            color: #2c3e50; /* Keep tech items dark for readability */
+            transition: all 0.3s ease;
+            color: #2c3e50;
+            position: relative;
+            overflow: hidden;
         }
 
         .tech-item:hover {
-            transform: translateY(-5px);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+        }
+
+        .tech-item i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .tech-item:hover i {
+            transform: rotate(360deg);
+        }
+
+        .tech-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.8), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .tech-item:hover::after {
+            transform: translateX(100%);
         }
 
         .portfolio-grid {
@@ -331,7 +363,10 @@
         <section class="content-section" id="tech-stack">
             <h2>Technology Stack</h2>
             <div class="tech-stack">
-                <div class="tech-item" ng-repeat="tech in techStack">{{tech}}</div>
+                <div class="tech-item" ng-repeat="tech in techStack">
+                    <i class="{{tech.icon}}"></i>
+                    {{tech.name}}
+                </div>
             </div>
         </section>
 
@@ -354,39 +389,34 @@
         angular.module('downloadApp', [])
         .controller('DownloadController', function($scope) {
             $scope.pageTitle = 'My Portfolio & Resume';
-            $scope.role = 'Full Stack Developer';
+            $scope.role = 'Aspiring Cybersecurity Enthusiast';
             $scope.resumePath = 'path/to/your/resume.pdf';
             
             $scope.techStack = [
-                'HTML5/CSS3',
-                'JavaScript',
-                'React',
-                'Node.js',
-                'Python',
-                'MongoDB',
-                'SQL',
-                'Git'
+                { name: 'HTML5/CSS3', icon: 'fab fa-html5' },
+                { name: 'JavaScript', icon: 'fab fa-js' },
+                { name: 'React', icon: 'fab fa-react' },
+                { name: 'Node.js', icon: 'fab fa-node-js' },
+                { name: 'Python', icon: 'fab fa-python' },
+                { name: 'MongoDB', icon: 'fas fa-database' },
+                { name: 'SQL', icon: 'fas fa-database' },
+                { name: 'Git', icon: 'fab fa-git-alt' },
+                { name: 'C/C++', icon: 'fas fa-code' }
             ];
 
             $scope.projects = [
                 {
-                    title: 'Project Title 1',
+                    title: 'ICSGAI',
                     description: 'Brief description of the project and technologies used.',
-                    image: 'project1.jpg',
-                    link: '#'
+                    image: 'images/icsgai.png',
+                    link: 'https://www.figma.com/design/lHw1z5Px8mbOUQDsECymY6/ICSGAI?node-id=0-1&t=GDOzghd2LJp92ONY-1'
                 },
                 {
-                    title: 'Project Title 2',
+                    title: 'Foodify',
                     description: 'Brief description of the project and technologies used.',
-                    image: 'project2.jpg',
-                    link: '#'
+                    image: 'images/foodify.png',
+                    link: 'https://www.figma.com/design/m39kTz8vR7fBaxcDn2m09I/Foodify?node-id=0-1&t=ZXAqa6njhbOIQXaq-1'
                 },
-                {
-                    title: 'Project Title 3',
-                    description: 'Brief description of the project and technologies used.',
-                    image: 'project3.jpg',
-                    link: '#'
-                }
             ];
         });
 

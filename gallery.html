@@ -132,6 +132,7 @@
             height: 300px;
             object-fit: cover;
             transition: transform 0.3s ease;
+            object-position: center 20%; /* Adjusted to move pose.jpg down */
         }
 
         .gallery-item:hover img {
@@ -269,44 +270,25 @@
             
             $scope.galleryItems = [
                 {
-                    image: 'dance1.jpg',
+                    image: 'images/pose.jpg',
                     alt: 'Performance 1',
                     title: 'Stage Performance',
                     description: 'Annual Dance Competition 2023'
                 },
                 {
-                    image: 'dance2.jpg',
+                    image: 'images/chiki.jpg',
                     alt: 'Performance 2',
                     title: 'Ballet Recital',
                     description: 'Spring Showcase'
                 },
                 {
-                    image: 'dance3.jpg',
+                    image: 'images/chiki2.jpg',
                     alt: 'Performance 3',
                     title: 'Contemporary Dance',
                     description: 'Modern Dance Festival'
                 },
-                {
-                    image: 'dance4.jpg',
-                    alt: 'Performance 4',
-                    title: 'Group Performance',
-                    description: 'International Dance Day'
-                },
-                {
-                    image: 'dance5.jpg',
-                    alt: 'Performance 5',
-                    title: 'Solo Performance',
-                    description: 'National Dance Championship'
-                },
-                {
-                    image: 'dance6.jpg',
-                    alt: 'Performance 6',
-                    title: 'Workshop',
-                    description: 'Dance Master Class'
-                }
             ];
         });
-
         // Custom cursor animation
         document.addEventListener('mousemove', function(e) {
             const cursor = document.querySelector('.cursor');

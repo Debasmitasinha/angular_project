@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="achievementApp">
+<html lang="en" ng-app="contactApp">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Achievements & Awards</title>
+    <title>Contact Me</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
     <style>
         body {
@@ -13,7 +13,7 @@
             padding: 0;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             cursor: none; /* Hide default cursor */
-            animation: pageLoad 1s ease-out;
+            animation: blurFadeIn 1s ease-out;
             overflow-x: hidden; /* Prevent horizontal scroll */
             position: relative;
         }
@@ -75,18 +75,13 @@
             }
         }
 
-        @keyframes pageLoad {
+        @keyframes blurFadeIn {
             0% {
                 opacity: 0;
-                transform: scale(0.98);
-                filter: blur(10px);
-            }
-            50% {
-                filter: blur(5px);
+                filter: blur(20px);
             }
             100% {
                 opacity: 1;
-                transform: scale(1);
                 filter: blur(0);
             }
         }
@@ -113,44 +108,91 @@
             color: #ffffff;
         }
 
-        .achievements-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            padding: 2rem 0;
-        }
-
-        .achievement-card {
+        .contact-section {
             background: white;
             border-radius: 10px;
-            padding: 1.5rem;
+            padding: 2rem;
+            margin: 2rem 0;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
             animation: fadeIn 1s ease-in;
         }
 
-        .achievement-card:hover {
-            transform: translateY(-5px);
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
         }
 
-        .achievement-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
+        .contact-item {
+            padding: 1.5rem;
+            background: #f8f9fa;
             border-radius: 8px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .contact-item:hover {
+            transform: translateY(-5px);
+            background: #e9ecef;
+        }
+
+        .contact-item i {
+            font-size: 2rem;
+            color: #2c3e50;
             margin-bottom: 1rem;
-            object-position: center 30%; /* Adjusted to show face better */
         }
 
-        .achievement-card h3 {
-            color: #ffffff;
+        .contact-item h3 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin: 1rem 0;
+            font-weight: bold;
+        }
+
+        .contact-form {
+            margin-top: 3rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
             margin-bottom: 0.5rem;
+            color: #2c3e50;
         }
 
-        .achievement-card p {
-            color: #6c757d;
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1rem;
         }
 
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #34495e;
+        }
+
+        /* Navbar styles */
         .navbar {
             background: #2c3e50;
             padding: 1rem 0;
@@ -212,9 +254,11 @@
             transition: all 0.15s ease-out;
         }
 
-        /* Cursor hover effects */
+        /* Cursor hover effect */
         a:hover ~ .cursor,
-        .achievement-card:hover ~ .cursor {
+        button:hover ~ .cursor,
+        input:hover ~ .cursor,
+        textarea:hover ~ .cursor {
             transform: scale(1.5);
         }
 
@@ -222,9 +266,30 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Home button style */
+        .home-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2c3e50;
+            color: white;
+            padding: 1rem;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .home-btn:hover {
+            background: #34495e;
+            transform: translateY(-3px);
+        }
     </style>
 </head>
-<body ng-controller="AchievementController">
+<body ng-controller="ContactController">
     <div class="cursor"></div>
     <div class="cursor-dot"></div>
     <nav class="navbar">
@@ -239,67 +304,81 @@
             </ul>
         </div>
     </nav>
-
     <div class="container">
         <header class="header">
-            <h1>{{pageTitle}}</h1>
-            <p>{{pageSubtitle}}</p>
+            <h1>Contact Me</h1>
+            <p>Get in touch for dance classes and collaborations</p>
         </header>
 
-        <div class="achievements-grid">
-            <div class="achievement-card" ng-repeat="achievement in achievements">
-                <img ng-src="{{achievement.image}}" alt="{{achievement.alt}}">
-                <h3>{{achievement.title}}</h3>
-                <p>{{achievement.description}}</p>
+        <section class="contact-section">
+            <div class="contact-info">
+                <div class="contact-item" ng-repeat="info in contactInfo">
+                    <i class="fas {{info.icon}}"></i>
+                    <h3>Mail Me!</h3>
+                    <p ng-bind-html="info.content"></p>
+                </div>
             </div>
-        </div>
+
+            <div class="contact-form">
+                <h2>Send Me a Message</h2>
+                <form ng-submit="submitForm()">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" ng-model="formData.name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" ng-model="formData.email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" ng-model="formData.subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" ng-model="formData.message" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
+        </section>
     </div>
 
+    <button onclick="window.location.href='index.html'" class="home-btn">
+        <i class="fas fa-home"></i>
+    </button>
+
+    <!-- Font Awesome for icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script>
-        var app = angular.module('achievementApp', []);
-        
-        app.controller('AchievementController', function($scope) {
-            $scope.pageTitle = 'My Achievements & Awards';
-            $scope.pageSubtitle = 'Celebrating Excellence in Dance and Modeling';
-            
-            $scope.achievements = [
+        angular.module('contactApp', ['ngSanitize'])
+        .controller('ContactController', function($scope) {
+            $scope.contactInfo = [
                 {
-                    image: 'images/miss-teen.jpg',
-                    alt: 'MISS TEEN TALENTED INDIA UNIVERSE 21',
-                    title: 'MISS TEEN TALENTED INDIA UNIVERSE 21',
-                    description: 'Peagent Winner of Miss Teen Talented India Universe 21'
+                    icon: 'fa-phone',
+                    title: 'Phone',
+                    content: '+1 (555) 123-4567'
                 },
                 {
-                    image: 'images/international-performance.jpg',
-                    alt: 'P&B National Level Dance Champ 22',
-                    title: 'P&B National Level Dance Champ 22',
-                    description: 'Winner of P&B National Level Dance Champ 22'
+                    icon: 'fa-envelope',
+                    title: 'Email',
+                    content: 'dance@example.com'
                 },
                 {
-                    image: 'images/teaching-excellence.jpg',
-                    alt: 'Miss North-East Beauty Queen 2020',
-                    title: 'Miss North-East Beauty Queen 2020',
-                    description: 'Won Miss North-East Beauty Queen 2020'
-                },
-                {
-                    image: 'images/choreography-award.jpg',
-                    alt: 'Winner Of Bishnupriya Manipuri Talent Hunt 2019',
-                    title: 'Winner Of Bishnupriya Manipuri Talent Hunt 2019',
-                    description: 'Regional Dance Competition (2022)'
-                },
-                {
-                    image: 'images/youth-mentor.jpg',
-                    alt: 'District Level Dance Champion – 2012',
-                    title: 'District Level Dance Champion – 2012',
-                    description: 'Winner of District Level Dance Competition (2012)'
-                },
-                {
-                    image: 'images/cultural-ambassador.jpg',
-                    alt: 'Kala Utsav Winner',
-                    title: 'Kala Utsav Winner',
-                    description: '1st Position in Kala Utsav (2019)'
+                    icon: 'fa-map-marker-alt',
+                    title: 'Location',
+                    content: '123 Dance Street<br>New York, NY 10001'
                 }
             ];
+
+            $scope.formData = {};
+
+            $scope.submitForm = function() {
+                // Handle form submission here
+                console.log($scope.formData);
+                // Reset form after submission
+                $scope.formData = {};
+            };
         });
 
         // Custom cursor animation
@@ -310,11 +389,8 @@
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
             
-            // Add delay to cursor dot
-            setTimeout(() => {
-                cursorDot.style.left = e.clientX + 'px';
-                cursorDot.style.top = e.clientY + 'px';
-            }, 50);
+            cursorDot.style.left = e.clientX + 'px';
+            cursorDot.style.top = e.clientY + 'px';
         });
     </script>
 </body>

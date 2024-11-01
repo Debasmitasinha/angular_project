@@ -119,6 +119,17 @@
             margin-bottom: 1rem;
         }
 
+        .profile-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 2rem auto;
+            display: block;
+            object-fit: cover;
+            border: 4px solid #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
         .content-section {
             background: rgba(255, 255, 255, 0.9);
             border-radius: 10px;
@@ -271,32 +282,38 @@
     
     <div class="container">
         <header class="header">
+            <img src="images/chiki.jpg" alt="Profile Picture" class="profile-image">
             <h1>About Me</h1>
             <p>The Dancing Diva</p>
         </header>
 
         <section class="content-section">
-            <h2>My Story</h2>
-            <p>I am a passionate dancer who loves to dance and share my love for dance with others. I have been dancing since I was a child and I have never stopped since then. I have won many awards and I am proud to say that I am a world class dancer.</p>
+            <h2>My Journey of Talent and Resilience</h2>
+            <p> Hello, everyone! I'm Debasmita Sinha, an 18-year-old girl from the beautiful northeastern state of Tripura, India. Today, I'd like to share my journey—a blend of academic achievements, a passion for the arts, and the resilience that has shaped me into who I am.
+                
+                My academic path began at Halhali Class XII School, where I focused on the Science stream, and now I'm excited to be pursuing Computer Technology at Assam Down Town University. Education has always been important to me, but my heart has a special place for the arts. I started learning Kathak, a classical dance form, when I was just five years old. Over the years, I've achieved Visharad in various disciplines, including Rabindra Nritya, Nazrul Nritya, Indian classical vocal, and even painting.
+                
+                Life hasn't always been easy. Losing my father when I was 12 was incredibly tough, but my mother's unwavering support has been my guiding light. I live by the mantra, "Nothing is impossible; the word itself says I'm possible." This belief has helped me overcome challenges and pursue my dreams.
+                
+                In the world of dance, I've had some wonderful experiences. I was honored to be crowned the Subdivision Level Dance Champion in 2012, and I continued to shine in competitions, winning titles like the Bishnupriya Manipuri Talent Hunt Dance Champion in 2019 and the Kishori Utkarsh Manch in 2020.
+                
+                At 14, I stepped into modeling, and what an adventure it has been! I've been fortunate to receive titles such as "Miss Northeast India Beauty Queen 2020," "Miss Teen Virtual Queen 2020," and "Miss Teen Talented India Universe 2020." Recently, I was named "Face Of The Year 2022" in Tripura and "Queen Of The Month" in July 2023.
+                
+                My journey has also taken me to the national stage, where I received the "Rashtriya Pratishtha Puraskar 2023" and the "Golden Icon Of The Nation 2023" at the Jackhi Gold Star Awards. I was deeply honored to receive the "Talent Award 2022" from the sub-divisional magistrate of the Government of Tripura for my contributions.
+                
+                In 2022, I secured first place in the National Level Speech Contest and second in the Science Slogan Competition celebrating National Science Day in Tripura. I even had the privilege of serving as a jury member for the "Nari Beauty Fashion Show 2021," a virtual pageant organized by Mi's Fashion Star.
+                
+                Most recently, I've been recognized with the "National Achievers Awards 2023" and the "Global Talent Icon Award 2023," celebrating my contributions as the "Best Model & Dancer Of The Year."
+                
+                Through every challenge and every triumph, I carry my passion, resilience, and belief in myself. My journey is proof that with determination and an unwavering spirit, we can reach incredible heights. Thank you for joining me on this journey!</p>
         </section>
 
         <div class="stats">
             <div class="stat-item" *ngFor="let stat of statistics">
-                <div class="counter" [countUp]="stat.value" [duration]="2000">0</div>
-                <div class="stat-label">{{stat.label}}</div>
+                <div class="counter" [countUp]="stat.value" [duration]="2000"></div>
+                <div class="stat-label"></div>
             </div>
         </div>
-
-        <section class="content-section">
-            <h2>Our Team</h2>
-            <div class="team-grid">
-                <div class="team-member" *ngFor="let member of teamMembers">
-                    <img [src]="member.image" [alt]="member.name">
-                    <h3>{{member.name}}</h3>
-                    <p>{{member.position}}</p>
-                </div>
-            </div>
-        </section>
     </div>
 
     <script>
