@@ -9,15 +9,15 @@ framework.
 
 Clone the repo using the following command: 
 ```powershell
-<pre>git clone https://github.com/Debasmitasinha/angular_project</pre>
+git clone https://github.com/Debasmitasinha/angular_project
 ```
 After Cloning(type this one in powershell):
 ```powershell
-<pre>python3 -m http.server</pre>
+python3 -m http.server
 ```
 After this open the browser and type:
 ```powershell
-<pre>localhost:8000</pre>
+localhost:8000
 ```
 ### Thanks
 
